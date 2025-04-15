@@ -8,6 +8,32 @@ export default function StoryGenerator() {
   const [story, setStory] = useState("");
   const [mode, setMode] = useState("story");
 
+  const copyToClipboard = async () => {
+    if (story) {
+      try {
+        await navigator.clipboard.writeText(story);
+        alert("📋 Story copied to clipboard!");
+      } catch (err) {
+        alert("Failed to copy!");
+        console.log(err);
+      }
+    }
+  };
+  
+  const downloadAsFile = () => {
+    if (story) {
+      const blob = new Blob([story], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "random_story.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  }
+
   return (
     <main className="page-container animate-fade-in">
       <section className="story-box glassmorphism">
@@ -40,6 +66,14 @@ export default function StoryGenerator() {
           >
             Generate a Story 🌟
           </button>
+          <button onClick={copyToClipboard} className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition generate-button " >
+    📋 Copy
+  </button>
+  <button onClick={downloadAsFile} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition generate-button ">
+    ⬇️ Download
+  </button>
+
+
         </div>
 
         {!!story && (
